@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/nav.css">
+        
+
+        <title>Baby Registration</title>
+        <script>
+            window.onload = () => {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('date').value = today;
+                fetchSitters();
+            }
+
+            async function fetchSitters() {
+                const day = new Date().toLocaleString('en-US', { weekday: 'long' });//get current day
+                const response = await fetch(`/babies/sitters-on-duty?day=${day}`);//gtting sitters on current day
+                const sitters = await response.json();
+                //populate sitter dropdown
+                const sitterContainer = document.getElementById('sitter-dropdown');
+                sitterContainer.innerHTML = '';// clear existing options
+
+                sitters.forEach(sitter => {
+                    const label = document.createElement('label');
+                    label.style.display = 'block';
+                    label.innerHTML = `
+                    <input type="checkbox" name="assigned_sitter[]" value="${sitter.name}">
+                    ${sitter.name}
+                `;
+                    sitterContainer.appendChild(label);
+
+                });
+            }
+        </script>
+    </head>
+
+    <body>
+        <header class="navbar">
+            <div class="logo">
+                <h1>Nana Day Care</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="sitterCombine.html">Manage Sitters</a></li>
+                    <li><a href="BabyCombine.html">Manage Babies</a>
+                    <li><a href="sales.html">Manage Sales</a></li>
+                    <li><a href="inventory1.html">Procurement and Inventory</a></li>
+                    <li><a href="help.html">Help</a></li>
+                    
+                </ul>
+            </nav>
+            <button id="logout-btn">Logout</button>
+
+        </header>
+        <h1 style="  text-align: center;
+    margin-bottom: 20px;
+    color: #000;
+">Register a Baby</h1>
+        <form id="babyForm" action="/babies/register" method="POST" onsubmit="return validateCheckboxes()">
+            <input type="text" name="name" placeholder="Name" required />
+            <input type="text" name="gender" placeholder="Gender" required />
+            <input type="number" name="age" placeholder="Age (Months)" required />
+            <input type="text" name="location" placeholder="Location" required />
+            <input type="text" name="brought_by" placeholder="Brought By" required />
+            <label for="time_of_arrival">time_of_arrival</label>
+            <input type="time" name="time_of_arrival" placeholder="Time of Arrival" required /><br><br><br>
+            <input type="text" name="parents_names" placeholder="Parents' Names" required /><br>
+            <input type="number" name="fee" placeholder="Fee (UGX)" required />
+            <input type="date" id="date" name="date" placeholder="Date" readonly />
+            <label for="assigned_sitter">assigned_sitter</label>
+            <div id="sitter-dropdown"></div>
+            <!-- https://www.w3schools.com/sql/ -->
+
+            <br>
+            <button type="submit">Register</button>
+
+        </form>
+        <script>
+            function validateCheckboxes() {
+                const checkboxes = document.querySelectorAll('input[name="assigned_sitter"]:checked');
+                if (checkboxes.length > 1) {
+                    alert('You can only assign one sitter');
+                    return false;
+                }
+                return true;
+            }
+        </script>
+        <!-- <script src="../js/babies.js"></script> -->
+
+    </body>
+
+</html>

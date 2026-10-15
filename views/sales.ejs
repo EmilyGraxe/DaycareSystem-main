@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+</head>
+<body>
+    <h1>Sales Report</h1>
+    <table border="1"></table>
+      <thead>
+        <tr>
+          <th>doll_id</th>
+          <th>doll_name</th>
+          <th>quantity</th>
+          <th>unit_price</th>
+          <th>total_price</th>
+          <th>sale_date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% sales.forEach(sale => { %>
+        <tr>
+          <td><%= sales.doll_id %></td>
+          <td><%= sales.doll_name %></td>
+          <td><%= sales.quantity %></td>
+          <td><%= sales.unit_price %></td>
+          <td><%= sales.total_price %></td>
+          <td><% sales.sale_date %></td>
+        </tr><% }); %>
+      </tbody>
+    </table>
+        
+    
+</body>
+</html>

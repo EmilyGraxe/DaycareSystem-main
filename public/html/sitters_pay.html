@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sitter Payment</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <script>
+    async function fetchSitterData() {
+      const sitterName = document.getElementById("name").value;
+
+      if (!sitterName) {
+        alert("Please enter a sitter's name.");
+        return;
+      }
+
+      // Fetch sitter details
+      const response = await fetch(`/api/sitter-data?name=${sitterName}`);
+      const data = await response.json();
+
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      document.getElementById("sitter_id").value = data.sitter_id;
+      document.getElementById("sitter_name").value = sitterName
+    }
+
+    async function calculateTotalChildren() {
+      const sitterId = document.getElementById("sitter_id").value;
+      const paymentDate = document.getElementById("payment_date").value;
+
+      if (!sitterId || !paymentDate) {
+        alert("Please enter sitter ID and payment date.");
+        return;
+      }
+
+      // Fetch total children and payment amount
+      const response = await fetch(`/api/total-children?sitter_id=${sitterId}&date=${paymentDate}`);
+      const data = await response.json();
+
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      document.getElementById("total_children").value = data.total_children;
+      document.getElementById("payment_amount").value = data.payment_amount;
+    }
+  </script>
+</head>
+<body>
+    <header class="navbar">
+            <div class="logo">
+                <h1>Nana Day Care</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="sitterCombine.html">Manage Sitters</a></li>
+                    <li><a href="BabyCombine.html">Manage Babies</a>
+                    <li><a href="sales.html">Manage Sales</a></li>
+                    <li><a href="inventory1.html">Procurement and Inventory</a></li>
+                    <li><a href="help.html">Help</a></li>
+                    
+                </ul>
+            </nav>
+            <button id="logout-btn">Logout</button>
+
+        </header>
+  <h1 style="  text-align: center;
+  margin-bottom: 20px;
+  color: #000;
+">Sitter Payment Form</h1>
+  <form id="sitterPayForm" action="/submit-sitter-pay" method="POST">
+    <label for="sitter_name">Sitter Name:</label>
+    <input type="text" id="name" name="name" required>
+    <button type="button" onclick="fetchSitterData()">Search</button><br><br>
+
+    <label for="sitter_id">Sitter ID:</label>
+    <input type="text" id="sitter_id" name="sitter_id" readonly><br><br>
+
+    <label for="sitter_name">Sitter Name:</label>
+    <input type="text" id="sitter_name" name="sitter_name" readonly><br><br>
+
+    <label for="payment_date">Payment Date:</label>
+    <input type="date" id="payment_date" name="payment_date" required><br><br>
+
+    <label for="total_children">Total Children:</label>
+    <input type="number" id="total_children" name="total_children" readonly><br><br>
+
+    <label for="payment_amount">Payment Amount:</label>
+    <input type="number" id="payment_amount" name="payment_amount" readonly><br><br>
+
+    <button type="button" onclick="calculateTotalChildren()">Calculate</button><br><br>
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>

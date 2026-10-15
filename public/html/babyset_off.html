@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baby Departure Form</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/nav.css">
+   <style>
+    #suggestions {
+      border: 1px solid #ccc;
+      max-height: 200px;
+      overflow-y: auto;
+      position: absolute;
+      z-index: 1000;
+      background-color: #fff;
+      width: 300px;
+    }
+    #suggestions div {
+      padding: 8px;
+      cursor: pointer;
+    }
+    #suggestions div:hover {
+      background-color: #f0f0f0;
+    }
+  </style> 
+</head>
+<body>
+   <header class="navbar">
+            <div class="logo">
+                <h1>Nana Day Care</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="sitterCombine.html">Manage Sitters</a></li>
+                    <li><a href="BabyCombine.html">Manage Babies</a>
+                    <li><a href="sales.html">Manage Sales</a></li>
+                    <li><a href="inventory1.html">Procurement and Inventory</a></li>
+                    <li><a href="help.html">Help</a></li>
+                    
+                </ul>
+            </nav>
+            <button id="logout-btn">Logout</button>
+
+        </header>
+  <h1 style="  text-align: center;
+  margin-bottom: 20px;
+  color: #000;
+">Baby Departure Form</h1>
+  <form id="departureForm" action="/api/update-departure" method="POST">
+    <!-- Search Baby by Name -->
+    <label for="search_name">Search Baby Name:</label>
+    <input type="text" id="search_name" name="search_name" placeholder="Enter baby name" autocomplete="off" onkeyup="searchBaby()">
+    <div id="suggestions"></div>
+
+    <!-- Baby ID (Auto-filled) -->
+    <label for="baby_id">Baby ID:</label>
+    <input type="text" id="baby_id" name="baby_id" readonly required><br><br>
+
+    <!-- Person Taking the Baby -->
+    <label for="person_taking">Person Taking Baby:</label>
+    <input type="text" id="person_taking" name="person_taking" required><br><br>
+
+    <!-- Time of Departure -->
+    <label for="time_of_departure">Time of Departure:</label>
+    <input type="datetime-local" id="time_of_departure" name="time_of_departure" required><br><br>
+
+    <!-- Comment -->
+    <label for="comment">Comment:</label>
+    <textarea id="comment" name="comment" placeholder="Add any comments..."></textarea><br><br>
+
+    <!-- Submit Button -->
+    <button type="submit">Update Departure</button>
+  </form>
+
+  <script>
+    // Function to fetch baby names based on the search input
+    async function searchBaby() {
+      const searchName = document.getElementById('search_name').value;
+      const suggestionsDiv = document.getElementById('suggestions');
+
+      // Clear suggestions if input is too short
+      if (searchName.length < 2) {
+        suggestionsDiv.innerHTML = '';
+        return;
+      }
+
+      try {
+        // Fetch data from the backend
+        const response = await fetch(`/api/baby?keyword=${encodeURIComponent(searchName)}`);
+        const babies = await response.json();
+
+        // Show suggestions
+        if (babies.length > 0) {
+          suggestionsDiv.innerHTML = babies
+            .map(baby => `<div onclick="selectBaby('${baby.baby_id}', '${baby.name}')">${baby.name}</div>`)
+            .join('');
+        } else {
+          suggestionsDiv.innerHTML = '<div>No matches found</div>';
+        }
+      } catch (err) {
+        console.error('Error fetching baby data:', err);
+      }
+    }
+
+    // Function to populate the baby_id field when a name is selected
+    function selectBaby(babyId, babyName) {
+      document.getElementById('baby_id').value = babyId; // Set baby ID
+      document.getElementById('search_name').value = babyName; // Set search input
+      document.getElementById('suggestions').innerHTML = ''; // Clear suggestions
+    }
+  </script>
+</body>
+</html>

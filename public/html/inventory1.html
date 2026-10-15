@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-size: 18px;
+      margin-left: 10px;
+      display: block;
+      font-weight: bold;
+    }
+    input, select, button, datalist {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;}
+    
+     input[type="checkbox"] {
+      margin: 10px;
+      width: 20px;
+      height: 20px;
+      transform: scale(1.5);
+    } 
+  </style>
+</head>
+<body>
+   <header class="navbar">
+            <div class="logo">
+                <h1>Nana Day Care</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="sitterCombine.html">Manage Sitters</a></li>
+                    <li><a href="BabyCombine.html">Manage Babies</a>
+                    <li><a href="sales.html">Manage Sales</a></li>
+                    <li><a href="inventory1.html">Procurement and Inventory</a></li>
+                    <li><a href="help.html">Help</a></li>
+                    
+                </ul>
+            </nav>
+            <button id="logout-btn">Logout</button>
+
+        </header>
+  <h1 style="  text-align: center;
+  margin-bottom: 20px;
+  color: #000;
+">Inventory Management</h1>
+ 
+  <form id="inventoryForm">
+    <!-- Mode Selection -->
+    <div class="form-group">
+      <label for="mode">Select Mode</label>
+      <select id="mode" name="mode" onchange="toggleMode()">
+        <option value="add">Add New Item</option>
+        <option value="update">Update Existing Item</option>
+      </select>
+    </div>
+
+    <!-- Item Search for Update -->
+    <div class="form-group" id="itemSearchGroup" style="display: none;">
+      <label for="item_search">Search Item by Name</label>
+      <input list="item_list" id="item_search" name="item_search" placeholder="Type to search...">
+      <datalist id="item_list"></datalist>
+    </div>
+
+    <!-- Item ID (only for update, auto-filled) -->
+    <div class="form-group" id="itemIdGroup" style="display: none;">
+      <label for="item_id">Item ID</label>
+      <input type="text" id="item_id" name="item_id" readonly>
+    </div>
+
+    <!-- Item Name -->
+    <div class="form-group">
+      <label for="item_name">Item Name</label>
+      <input type="text" id="item_name" name="item_name" placeholder="Enter item name">
+    </div>
+
+    <!-- Quantity -->
+    <div class="form-group">
+      <label for="quantity">Quantity</label>
+      <input type="number" id="quantity" name="quantity" placeholder="Enter quantity">
+    </div>
+
+    <!-- Procured Date -->
+    <div class="form-group">
+      <label for="procured_date">Procured Date</label>
+      <input type="date" id="procured_date" name="procured_date">
+    </div>
+
+    <!-- Resale Checkbox -->
+    <div class="form-group">
+      <label for="is_resale">Is_Resale</label>
+      <input type="checkbox" id="is_resale" name="is_resale">
+    </div>
+
+    <!-- Unit Price -->
+    <div class="form-group">
+      <label for="unit_price">Unit Price</label>
+      <input type="number" id="unit_price" name="unit_price" placeholder="Enter unit price">
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('inventoryForm');
+    const mode = document.getElementById('mode');
+    const itemSearchGroup = document.getElementById('itemSearchGroup');
+    const itemIdGroup = document.getElementById('itemIdGroup');
+    const itemSearch = document.getElementById('item_search');
+    const itemList = document.getElementById('item_list');
+    const itemIdInput = document.getElementById('item_id');
+
+    // Toggle visibility based on mode
+    function toggleMode() {
+      if (mode.value === 'update') {
+        itemSearchGroup.style.display = 'block';
+        itemIdGroup.style.display = 'block';
+      } else {
+        itemSearchGroup.style.display = 'none';
+        itemIdGroup.style.display = 'none';
+      }
+    }
+
+    // Fetch items for datalist when in update mode
+    itemSearch.addEventListener('input', async () => {
+      const keyword = itemSearch.value;
+
+      if (keyword.length >= 2) {
+        try {
+          const response = await fetch(`/inventory1/api/inventory1/search?keyword=${keyword}`);
+          const items = await response.json();
+
+          // Clear existing options
+          itemList.innerHTML = '';
+
+          // Populate datalist
+          items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.item_name;
+            option.dataset.itemId = item.item_id;
+            itemList.appendChild(option);
+          });
+        } catch (err) {
+          console.error('Error fetching items:', err);
+        }
+      }
+    });
+
+    // Auto-fill item ID when selecting an item from the list
+    itemSearch.addEventListener('change', () => {
+      const selectedOption = [...itemList.options].find(option => option.value === itemSearch.value);
+      if (selectedOption) {
+        itemIdInput.value = selectedOption.dataset.itemId || '';
+      }
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = {
+        mode: formData.get('mode'),
+        item_id: formData.get('item_id') || null,
+        item_name: formData.get('item_name'),
+        quantity: parseInt(formData.get('quantity')),
+        procured_date: formData.get('procured_date'),
+        is_resale: formData.get('is_resale') ? true : false,
+        unit_price: parseFloat(formData.get('unit_price'))
+      };
+
+      try {
+        const response = await fetch('/inventory1/inventory', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          alert('Operation successful!');
+          form.reset();
+          toggleMode(); // Reset mode display
+        } else {
+          const error = await response.json();
+          alert('Error: ' + error.message);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        alert('An unexpected error occurred.');
+      }
+    });
+  </script>
+</body>
+</html>

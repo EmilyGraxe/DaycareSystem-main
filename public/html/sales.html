@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Form</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/nav.css">
+</head>
+<body>
+    <header class="navbar">
+            <div class="logo">
+                <h1>Nana Day Care</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="sitterCombine.html">Manage Sitters</a></li>
+                    <li><a href="BabyCombine.html">Manage Babies</a>
+                    <li><a href="sales.html">Manage Sales</a></li>
+                    <li><a href="inventory1.html">Procurement and Inventory</a></li>
+                    <li><a href="help.html">Help</a></li>
+                    
+                </ul>
+            </nav>
+            <button id="logout-btn">Logout</button>
+
+        </header>
+  <h1 style="  text-align: center;
+  margin-bottom: 20px;
+  color: #000;
+">Sales Record Form</h1>
+  <form id="salesForm">
+    <label for="search">Search Doll:</label>
+    <input type="text" id="search" placeholder="Enter Doll Name or ID" autocomplete="off">
+    <div id="suggestions"></div>
+
+    <label for="dollName">Doll Name:</label>
+    <input type="text" id="dollName" readonly>
+
+    <label for="dollId">Doll ID:</label>
+    <input type="text" id="dollId" readonly>
+
+    <label for="unitPrice">Unit Price:</label>
+    <input type="number" id="unitPrice" readonly>
+
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" min="1" required>
+
+    <label for="totalPrice">Total Price:</label>
+    <input type="number" id="totalPrice" readonly>
+
+    <label for="saleDate">Sale Date:</label>
+    <input type="date" id="saleDate" required><br><br>
+
+    <button type="submit">Record Sale</button>
+  </form>
+
+  <script>
+    const searchInput = document.getElementById('search');
+    const suggestions = document.getElementById('suggestions');
+    const dollName = document.getElementById('dollName');
+    const dollId = document.getElementById('dollId');
+    const unitPrice = document.getElementById('unitPrice');
+    const quantity = document.getElementById('quantity');
+    const totalPrice = document.getElementById('totalPrice');
+    const salesForm = document.getElementById('salesForm');
+
+    let selectedDoll = null;
+
+    // Search dolls based on input
+    searchInput.addEventListener('input', async () => {
+      const keyword = searchInput.value.trim();
+      if (!keyword) {
+        suggestions.innerHTML = '';
+        return;
+      }
+
+      const response = await fetch(`/api/dolls?keyword=${encodeURIComponent(keyword)}`);
+      const dolls = await response.json();
+
+      suggestions.innerHTML = dolls
+        .map(doll => `<div class="suggestion" data-id="${doll.item_id}" data-name="${doll.item_name}" data-price="${doll.unit_price}" data-quantity="${doll.quantity}">
+                        ${doll.item_name} (ID: ${doll.item_id})
+                      </div>`)
+        .join('');
+    });
+
+    // Select doll from suggestions
+    suggestions.addEventListener('click', (e) => {
+      if (e.target.classList.contains('suggestion')) {
+        selectedDoll = {
+          id: e.target.dataset.id,
+          name: e.target.dataset.name,
+          price: parseFloat(e.target.dataset.price),
+          availableQuantity: parseInt(e.target.dataset.quantity, 10),
+        };
+
+        dollName.value = selectedDoll.name;
+        dollId.value = selectedDoll.id;
+        unitPrice.value = selectedDoll.price;
+
+        suggestions.innerHTML = '';
+        searchInput.value = '';
+      }
+    });
+
+    // Calculate total price
+    quantity.addEventListener('input', () => {
+      if (selectedDoll && quantity.value) {
+        totalPrice.value = (quantity.value * selectedDoll.price).toFixed(2);
+      }
+    });
+
+    // Submit sale
+    salesForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!selectedDoll) {
+        alert('Please select a doll first.');
+        return;
+      }
+
+      if (quantity.value > selectedDoll.availableQuantity) {
+        alert('Quantity exceeds available stock.');
+        return;
+      }
+
+      const sale = {
+        doll_id: selectedDoll.id,
+        doll_name: selectedDoll.name,
+        quantity: parseInt(quantity.value, 10),
+        unit_price: selectedDoll.price,
+        total_price: parseFloat(totalPrice.value),
+        sale_date: new Date().toISOString(),
+      };
+
+      const response = await fetch('/api/sales', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sale),
+      });
+
+      if (response.ok) {
+        alert('Sale recorded successfully.');
+        salesForm.reset();
+        selectedDoll = null;
+        totalPrice.value = '';
+      } else {
+        alert('Error recording sale.');
+      }
+    });
+  </script>
+</body>
+</html>

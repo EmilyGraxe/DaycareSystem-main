@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitters Report</title>
+</head>
+<body>
+    <h1>Sitters Report</h1>
+    <table border="1"></table>
+      <thead>
+        <tr>
+          <th>sitter_id</th>
+          <th>name</th>
+          <th>location</th>
+          <th>dob</th>
+          <th>gender</th>
+          <th>next_of_kin</th>
+          <th>nin</th>
+          <th>recommendor_name</th>
+          <th>religion</th>
+          <th>education_level</th>
+          <th>sitter_number</th>
+          <th>contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% sitters.forEach(sitter => { %>
+        <tr>
+          <td><%= sitter.sitter_id %></td>
+          <td><%= sitter.name %></td>
+          <td><%= sitter.location %></td>
+          <td><%= sitter.dob %></td>
+          <td><%= sitter.gender %></td>
+          <td><%= sitter.next_of_kin %></td>
+          <td><%= sitter.nin %></td>
+          <td><%= sitter.recommendor_name %></td>
+          <td><%= sitter.religion %></td>
+          <td><%= sitter.education_level %></td>
+          <td><%= sitter.sitter_number %></td>
+          <td><%= sitter.contact %></td>
+        </tr><% }); %>
+      </tbody>
+    </table>
+    
+</body>
+</html>

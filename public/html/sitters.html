@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/nav.css">
+    <title>Sitter Registration</title>
+</head>
+<body>
+      <header class="navbar">
+            <div class="logo">
+                <h1>Nana Day Care</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="sitterCombine.html">Manage Sitters</a></li>
+                    <li><a href="BabyCombine.html">Manage Babies</a>
+                    <li><a href="sales.html">Manage Sales</a></li>
+                    <li><a href="inventory1.html">Procurement and Inventory</a></li>
+                    <li><a href="help.html">Help</a></li>
+                    
+                </ul>
+            </nav>
+            <button id="logout-btn">Logout</button>
+
+        </header>
+    <h1 style="  text-align: center;
+    margin-bottom: 20px;
+    color: #000;
+">Register a sitter</h1>
+    
+
+     <form action="/sitters/register" method="POST" > 
+        <input type="text" name="name" placeholder="Name" required/>
+        <input type="text" name="location" placeholder="Location" required/>
+        <p style="color: #898585;">Date of Birth</p>
+        <input type="date" name="dob" placeholder="Date of Birth" required/>
+        <input type="text" name="gender" placeholder="Gender" required/>
+        <input type="text" name="next_of_kin" placeholder="Next of Kin" required/>
+        <input type="text" name="nin" placeholder="NIN" required/>
+        <input type="text" name="recommendor_name" placeholder="Recommendor's Name" required/>
+        <input type="text" name="religion" placeholder="Religion (optional)" required/>
+        <input type="text" name="education_level" placeholder="Education Level" required/>
+        <input type="text" name="contact" placeholder="Contact" required/>
+
+        <label style="font-size: medium;color: #898585;" for="on_duty"> Days for duty:</label><br>
+        
+            <div style="color: #898585;" class="dropdown">
+                <button type="button" style="background-color: hwb(30 8% 91% / 0.875);">On Duty <i class="fa fa-caret-down"></i></button>
+                <div class="dropdown-content" id ="on_duty">
+                        <label><input type="checkbox" name="on_duty[]" value="Monday">Monday</label>
+                        <label><input type="checkbox" name="on_duty[]" value="Tuesday">Tuesday</label>
+                        <label><input type="checkbox" name="on_duty[]" value="Wednesday">Wednesday</label>
+                        <label><input type="checkbox" name="on_duty[]" value="Thursday">Thursday</label>
+                        <label><input type="checkbox" name="on_duty[]" value="Friday">Friday</label>
+                        <label><input type="checkbox" name="on_duty[]" value="Saturday">Saturday</label>
+                        <label><input type="checkbox" name="on_duty[]" value="Sunday">Sunday</label>
+                </div>
+
+         </div>
+
+
+
+        <br>
+        <br>
+        <br>
+        <button type="submit">Register</button>
+    
+    </form>
+    <script>
+     document.querySelector('.dropdown button').addEventListener('click', function() { 
+        const dropdownContent = document.querySelector('.dropdown-content');
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';}) // toggle('show');
+
+        
+     </script>
+    
+    
+</body>
+</html>

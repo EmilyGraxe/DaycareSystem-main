@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record Payment</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <script>
+    // Payment plans with corresponding amounts
+    const paymentPlans = {
+      "Half Day Sitting": 15000,
+      "Full Day Sitting": 20000,
+      "Monthly Half Day Sitting": 450000,
+      "Monthly Full Day Sitting": 600000
+    };
+
+    // Function to autofill the amount based on selected type
+    function updateAmount() {
+      const typeSelect = document.getElementById('type');
+      const amountInput = document.getElementById('amount');
+      const selectedType = typeSelect.value;
+      amountInput.value = paymentPlans[selectedType] || '';
+    }
+
+    // Function to fetch and display baby names matching the search keyword
+    async function searchBaby(keyword) {
+      if (!keyword) return;
+
+      const response = await fetch(`/api/baby?keyword=${keyword}`);
+      const babies = await response.json();
+      const searchResults = document.getElementById('searchResults');
+      searchResults.innerHTML = '';
+
+      babies.forEach(baby => {
+        const option = document.createElement('div');
+        option.textContent = `${baby.name} (ID: ${baby.baby_id})`;
+
+        option.onclick = () => {
+          document.getElementById('baby_id').value = baby.baby_id;
+          document.getElementById('baby_name').value = baby.name;
+          searchResults.innerHTML = '';
+        };
+        searchResults.appendChild(option);
+      });
+    }
+  </script>
+  
+</head>
+<body>
+ <header class="navbar">
+            <div class="logo">
+                <h1>Nana Day Care</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="sitterCombine.html">Manage Sitters</a></li>
+                    <li><a href="BabyCombine.html">Manage Babies</a>
+                    <li><a href="sales.html">Manage Sales</a></li>
+                    <li><a href="inventory1.html">Procurement and Inventory</a></li>
+                    <li><a href="help.html">Help</a></li>
+                    
+                </ul>
+            </nav>
+            <button id="logout-btn">Logout</button>
+
+        </header>
+  <h1 style="  text-align: center;
+  margin-bottom: 20px;
+  color: #000;
+">Record Payment</h1>
+  <form id="paymentForm" action="/payments1/payments" method="POST">
+    <label for="baby_name">Search Baby:</label>
+    <input type="text" id="baby_name" name="baby_name" oninput="searchBaby(this.value)" autocomplete="off" required>
+    <div id="searchResults"></div>
+
+    <label for="baby_id">Baby ID:</label>
+    <input type="number" id="baby_id" name="baby_id" readonly required>
+
+
+    <label for="type">Type of Payment:</label>
+    <select id="type" name="type" onchange="updateAmount()" required>
+      <option value="">Select a Plan</option>
+      <option value="Half Day Sitting">Half Day Sitting</option>
+      <option value="Full Day Sitting">Full Day Sitting</option>
+      <option value="Monthly Half Day Sitting">Monthly Half Day Sitting</option>
+      <option value="Monthly Full Day Sitting">Monthly Full Day Sitting</option>
+    </select>
+
+    <label for="amount">Amount (UGX):</label>
+    <input type="number" id="amount" name="amount" readonly required>
+
+    <label for="payment_date">Payment Date:</label>
+    <input type="date" id="payment_date" name="payment_date" required><br><br>
+
+    <button type="submit">Submit Payment</button>
+  </form>
+</body>
+</html>

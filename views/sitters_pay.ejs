@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitter's Payment Report</title>
+</head>
+<body>
+    <h1>Sitter's Payment Report</h1>
+    <table border="1"></table>
+      <thead>
+        <tr>
+          <th>pay_id</th>
+          <th>sitter_id</th>
+          <th>sitter_name</th>
+          <th>total_children</th>
+          <th>payment_amount</th>
+          <th>payment_date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% sitters_pay.forEach(sitter_pay => { %>
+        <tr>
+          <td><%= sitter_pay.pay_id %></td>
+          <td><%= sitter_pay.sitter_id %></td>
+          <td><%= sitter_pay.sitter_name %></td>
+          <td><%= sitter_pay.total_children %></td>
+          <td><%= sitter_pay.payment_amount %></td>
+          <td><% sitter_pay.payment_date %></td>
+        </tr><% }); %>
+      </tbody>
+    </table>
+        
+    
+</body>
+</html>

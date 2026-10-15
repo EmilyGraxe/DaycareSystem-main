@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babies Report</title>
+</head>
+<body>
+    <h1>Babies Report</h1>
+    <table border="1"></table>
+      <thead>
+        <tr>
+          <th>baby_id</th>
+          <th>name</th>
+          <th>gender</th>
+          <th>age</th>
+          <th>location</th>
+          <th>brought_by</th>
+          <th>time_of_arrival</th>
+          <th>parents_names</th>
+          <th>fee</th>
+          <th>period_of_stay</th>
+          <th>baby_number</th>
+          <th>status</th>
+          <th>person_taking</th>
+          <th>time_of_departure</th>
+          <th>comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% babies.forEach(baby => { %>
+        <tr>
+          <td><%= baby.baby_id %></td>
+          <td><%= baby.name %></td>
+          <td><%= baby.gender %></td>
+          <td><%= baby.age %></td>
+          <td><%= baby.location %></td>
+          <td><%= baby.brought_by %></td>
+          <td><%= baby.time_of_arrival %></td>
+          <td><%= baby.parents_names %></td>
+          <td><%= baby.fee %></td>
+          <td><%= baby.period_of_stay %></td>
+          <td><%= baby.baby_number %></td>
+          <td><%= baby.status %></td>
+          <td><%= baby.person_taking %></td>
+          <td><%= baby.time_of_departure %></td>
+          <td><%= baby.comment %></td>
+        </tr><% }); %>
+      </tbody>
+    </table>
+    
+</body>
+</html>

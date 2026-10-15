@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments Report</title>
+</head>
+<body>
+    <h1>Payments Report</h1>
+    <table border="1"></table>
+      <thead>
+        <tr>
+          <th>type</th>
+          <th>amount</th>
+          <th>sitter_id</th>
+          <th>baby_id</th>
+          <th>payment_date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% payments.forEach(payment => { %>
+        <tr>
+          <td><%= payment.type %></td>
+          <td><%= payment.amount %></td>
+          <td><%= payment.sitter_id %></td>
+          <td><%= payment.baby_id %></td>
+          <td><%= payment.payment_date %></td>
+        </tr><% }); %>
+      </tbody>
+    </table>
+        
+    
+</body>
+</html>

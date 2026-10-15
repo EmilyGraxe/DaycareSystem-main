@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Report</title>
+</head>
+<body>
+    <h1>Inventory Report</h1>
+    <table border="1"></table>
+      <thead>
+        <tr>
+          <th>item_id</th>
+          <th>item_name</th>
+          <th>quantity</th>
+          <th>unit_price</th>
+          <th>is_resale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% inventory.forEach(inventory => { %>
+        <tr>
+          <td><%= inventory.item_id %></td>
+          <td><%= inventory.item_name %></td>
+          <td><%= inventory.quantity %></td>
+          <td><%= inventory.unit_price %></td>
+          <td><%= inventory.is_resale %></td>
+        </tr><% }); %>
+      </tbody>
+    </table>
+        
+    
+</body>
+</html>
